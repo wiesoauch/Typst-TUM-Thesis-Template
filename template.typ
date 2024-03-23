@@ -4,6 +4,9 @@
 #import "acknowledgement.typ": *
 #import "abstract.typ": *
 
+#import "@preview/glossarium:0.2.3": make-glossary, print-glossary, gls, glspl
+#import "@preview/tablex:0.0.6": tablex, rowspanx, colspanx
+
 #let draft = true
 #let mydraft = true
 
@@ -14,7 +17,17 @@
   ]
 ]
 
+#let silentheading(level, body) = [
+  #heading(outlined: false, level: level, numbering: none, bookmarked: true)[#body]
+]
+
+#let tablemyx(..args) = {
+  set par(justify: false)
+  tablex.with(stroke: 0.5pt + black, inset: 6.5pt)(..args)
+}
+
 #let project(
+  glossary: (),
   degree: "The degree",
   program: "The Program",
   supervisor: "Your Supervisor",
@@ -30,11 +43,13 @@
   bibfile: "",
   body,
 ) = {
-
+show: make-glossary
 let draft_string = ""
 if draft{
   draft_string = "DRAFT – "
 }
+
+set text(ligatures: false)
 
 set document(author: author, title: draft_string + titleEnglish)
 set page(
@@ -98,6 +113,9 @@ show heading.where(level: 1): it => [
   #it
 ]
 
+show heading.where(level: 3): set text(size: 1.05em)
+show heading.where(level: 4): set text(size: 1.0em)
+
 show ref: it => {
   let el = it.element
   if el != none and el.func() == heading {
@@ -107,6 +125,7 @@ show ref: it => {
 }
 
 show ref: set text(fill: color.olive)
+show link: set text(fill: blue)
 
 set heading(supplement: it => {
   if (it.has("level")) {
@@ -141,26 +160,37 @@ pagebreak(weak: false)
 
 // Main body.
 show cite: set text(fill: blue) if mydraft
-set cite(style: "alphanumerical")
+show footnote: set text(fill: purple) if mydraft
+set cite(style: "alphanumeric")
 set cite(style: "chicago-author-date") if mydraft
 
 
 show figure: set text(size: 0.9em)
 show figure: it => [#v(1em) #it #v(1em)]
 set table(stroke: 0.5pt + black, inset: 6.5pt)
+show table: set par(justify: false)
+
 set page(numbering: "1")
 counter(page).update(1)
 set par(leading: 0.9em, first-line-indent: 1.8em, justify: true)
 show par: set block(spacing: 1em)
 set text(font: "New Computer Modern")
 show raw: set text(font: "New Computer Modern Mono")
-show heading: set block(above: 1.75em, below: 1em)
+show heading.where(level: 1): set block(above: 1.95em, below: 1em)
+show heading.where(level: 2): set block(above: 1.85em, below: 1em)
+show heading.where(level: 3): set block(above: 1.75em, below: 1em)
+show heading.where(level: 4): set block(above: 1.55em, below: 1em)
 set math.equation(numbering: "(1)")
 
 body
 
 set page(numbering: "i")
 counter(page).update(1)
+
+
+// List of Acronyms.
+heading(numbering: none)[List of Acronyms]
+print-glossary(glossary)
 
 /*
 // List of figures.
