@@ -1,11 +1,14 @@
-#import "template.typ": todo
+#import "utils.typ": todo
 
+= Introduction <chapter_introduction>
 
 == Motivation
 
-#todo[Write the Conclusion]
+#todo[Write the thesis]
 
-Because I have to @cite_todo. #lorem(100)
+Because I have to @cite_todo. This is a abbreviation @oidc explained in the glossary.
+
+#lorem(100)
 
 #lorem(100)
 
